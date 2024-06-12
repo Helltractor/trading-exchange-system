@@ -40,9 +40,12 @@ services:
     container_name: mysql
     ports:
       - "3306:3306"
-    command: --default-authentication-plugin=mysql_native_password
+    command:
+      --default-authentication-plugin=mysql_native_password
     environment:
       - MYSQL_ROOT_PASSWORD=password
+      # MySQL:latest 已经弃用--default-authentication-plugin参数，使用MYSQL_AUTH_PLUGIN参数，才能够连接到数据库
+      - MYSQL_AUTH_PLUGIN=caching_sha2_password
     volumes:
       - "./sql/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql:ro"
       - "./docker/mysql-data:/var/lib/mysql"
