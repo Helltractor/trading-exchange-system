@@ -25,19 +25,24 @@ import java.util.concurrent.TimeUnit;
 public class RestClient {
     
     static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    static final ApiException ERROR_UNKNOWN = new ApiException(ApiError.INTERNAL_SERVER_ERROR, "api",
-            "Api failed without error code.");
-    final Logger logger = LoggerFactory.getLogger(getClass());
-    final String endpoint;
-    final String host;
-    final ObjectMapper objectMapper;
-    OkHttpClient client;
     
-    RestClient(String endpoint, String host, ObjectMapper objectMapper, OkHttpClient client) {
+    static final ApiException ERROR_UNKNOWN = new ApiException(ApiError.INTERNAL_SERVER_ERROR, "api", "Api failed without error code.");
+    
+    final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    final String endpoint;
+    
+    final String host;
+    
+    final ObjectMapper objectMapper;
+    
+    OkHttpClient okHttpClient;
+    
+    RestClient(String endpoint, String host, ObjectMapper objectMapper, OkHttpClient okHttpClient) {
         this.endpoint = endpoint;
         this.host = host;
         this.objectMapper = objectMapper;
-        this.client = client;
+        this.okHttpClient = okHttpClient;
     }
     
     public <T> T get(Class<T> clazz, String path, String authHeader, Map<String, String> query) {
@@ -65,7 +70,7 @@ public class RestClient {
         if (!path.startsWith("/")) {
             throw new IllegalArgumentException("Invalid path: " + path);
         }
-        // query:
+        // query
         String queryString = null;
         if (query != null) {
             List<String> paramList = new ArrayList<>();
@@ -80,7 +85,7 @@ public class RestClient {
         }
         final String url = urlBuilder.toString();
         
-        // json body:
+        // json body
         String jsonBody;
         try {
             jsonBody = body == null ? ""
@@ -109,7 +114,7 @@ public class RestClient {
     @SuppressWarnings("unchecked")
     <T> T execute(Class<T> clazz, TypeReference<T> ref, Request request) throws IOException {
         logger.info("request: {}...", request.url().url());
-        try (Response response = this.client.newCall(request).execute()) {
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
             if (response.code() == 200) {
                 try (ResponseBody body = response.body()) {
                     String json = body.string();
@@ -127,7 +132,7 @@ public class RestClient {
             } else if (response.code() == 400) {
                 try (ResponseBody body = response.body()) {
                     String bodyString = body.string();
-                    logger.warn("response 400. error: " + bodyString);
+                    logger.warn("response 400. error: {}", bodyString);
                     ApiErrorResponse err = objectMapper.readValue(bodyString, ApiErrorResponse.class);
                     if (err == null || err.error() == null) {
                         throw ERROR_UNKNOWN;
@@ -192,13 +197,13 @@ public class RestClient {
         
         public RestClient build(ObjectMapper objectMapper) {
             OkHttpClient client = new OkHttpClient.Builder()
-                    // set connect timeout:
+                    // set connect timeout
                     .connectTimeout(this.connectTimeout, TimeUnit.SECONDS)
-                    // set read timeout:
+                    // set read timeout
                     .readTimeout(this.readTimeout, TimeUnit.SECONDS)
-                    // set connection pool:
+                    // set connection pool
                     .connectionPool(new ConnectionPool(0, this.keepAlive, TimeUnit.SECONDS))
-                    // do not retry:
+                    // do not retry
                     .retryOnConnectionFailure(false).build();
             String endpoint = this.scheme + "://" + this.host;
             if (this.port != (-1)) {
@@ -207,5 +212,4 @@ public class RestClient {
             return new RestClient(endpoint, this.host, objectMapper, client);
         }
     }
-    
 }
