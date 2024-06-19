@@ -1,4 +1,4 @@
-package com.warp.exchange.web.ui;
+package com.warp.exchange.service;
 
 import com.warp.exchange.bean.AuthToken;
 import com.warp.exchange.support.LoggerSupport;

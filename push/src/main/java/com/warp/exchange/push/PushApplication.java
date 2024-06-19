@@ -2,15 +2,13 @@ package com.warp.exchange.push;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  * 基于VertX的推送服务（WebSocket）
  */
-@SpringBootApplication
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class) // 禁用数据库自动配置 (无DataSource, JdbcTemplate...)
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class}) // 禁用数据库自动配置 (无DataSource, JdbcTemplate...)
 public class PushApplication {
     
     public static void main(String[] args) {

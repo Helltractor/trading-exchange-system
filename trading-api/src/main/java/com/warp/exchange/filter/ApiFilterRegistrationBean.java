@@ -29,10 +29,10 @@ import java.util.Base64;
 public class ApiFilterRegistrationBean extends FilterRegistrationBean<Filter> {
     
     @Autowired
-    UserService userService;
+    private UserService userService;
     
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     
     @Value("#{exchangeConfiguration.hmacKey}")
     String hmacKey;
@@ -74,7 +74,7 @@ public class ApiFilterRegistrationBean extends FilterRegistrationBean<Filter> {
             }
         }
         
-        void sendErrorResponse(HttpServletResponse response, ApiException e) throws IOException {
+        private void sendErrorResponse(HttpServletResponse response, ApiException e) throws IOException {
             response.sendError(400);
             response.setContentType("application/json");
             PrintWriter pw = response.getWriter();
@@ -82,7 +82,7 @@ public class ApiFilterRegistrationBean extends FilterRegistrationBean<Filter> {
             pw.flush();
         }
         
-        Long parseUser(HttpServletRequest request) {
+        private Long parseUser(HttpServletRequest request) {
             // 尝试通过Authorization Header认证用户:
             String auth = request.getHeader("Authorization");
             if (auth != null) {
@@ -97,12 +97,12 @@ public class ApiFilterRegistrationBean extends FilterRegistrationBean<Filter> {
             return null;
         }
         
-        Long parseUserFromApiKey(String apiKey, String apiSignature, HttpServletRequest request) {
+        private Long parseUserFromApiKey(String apiKey, String apiSignature, HttpServletRequest request) {
             // TODO: 验证API-Key, API-Secret并返回userId
             return null;
         }
         
-        Long parseUserFromAuthorization(String auth) {
+        private Long parseUserFromAuthorization(String auth) {
             if (auth.startsWith("Basic ")) {
                 String eap = new String(Base64.getDecoder().decode(auth.substring(6)), StandardCharsets.UTF_8);
                 int pos = eap.indexOf(':');

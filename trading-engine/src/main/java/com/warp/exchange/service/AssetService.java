@@ -1,9 +1,9 @@
 package com.warp.exchange.service;
 
+import com.warp.exchange.entity.trade.asset.Asset;
 import com.warp.exchange.enums.AssetEnum;
 import com.warp.exchange.enums.Transfer;
 import com.warp.exchange.support.LoggerSupport;
-import com.warp.exchange.trade.asset.Asset;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

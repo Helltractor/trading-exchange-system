@@ -1,10 +1,10 @@
-package com.warp.exchange.web.api;
+package com.warp.exchange.controller;
 
-import com.warp.exchange.entity.trade.OrderEntity;
+import com.warp.exchange.entity.trade.asset.Asset;
+import com.warp.exchange.entity.trade.order.OrderEntity;
 import com.warp.exchange.enums.AssetEnum;
 import com.warp.exchange.service.AssetService;
 import com.warp.exchange.service.OrderService;
-import com.warp.exchange.trade.asset.Asset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +21,10 @@ import java.util.concurrent.ConcurrentMap;
 public class InternalTradingEngineApiController {
     
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
     
     @Autowired
-    AssetService assetService;
+    private AssetService assetService;
     
     @GetMapping("/{userId}/assets")
     public Map<AssetEnum, Asset> getAssets(@PathVariable("userId") Long userId) {

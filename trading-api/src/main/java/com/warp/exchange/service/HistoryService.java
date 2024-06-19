@@ -2,7 +2,7 @@ package com.warp.exchange.service;
 
 import com.warp.exchange.bean.SimpleMatchDetailRecord;
 import com.warp.exchange.entity.trade.MatchDetailEntity;
-import com.warp.exchange.entity.trade.OrderEntity;
+import com.warp.exchange.entity.trade.order.OrderEntity;
 import com.warp.exchange.support.AbstractDbService;
 import org.springframework.stereotype.Component;
 

@@ -1,5 +1,6 @@
-package com.warp.exchange.sequencer;
+package com.warp.exchange.service;
 
+import com.warp.exchange.handler.SequenceHandler;
 import com.warp.exchange.message.event.AbstractEvent;
 import com.warp.exchange.messaging.*;
 import com.warp.exchange.support.LoggerSupport;

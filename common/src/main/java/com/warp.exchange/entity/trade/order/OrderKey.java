@@ -1,4 +1,4 @@
-package com.warp.exchange.trade.order;
+package com.warp.exchange.entity.trade.order;
 
 import java.math.BigDecimal;
 

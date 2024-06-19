@@ -1,4 +1,4 @@
-package com.warp.exchange.web.ui;
+package com.warp.exchange.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warp.exchange.api.ApiException;
@@ -29,10 +29,10 @@ import java.util.Map;
 public class ProxyFilterRegistrationBean extends FilterRegistrationBean<Filter> {
     
     @Autowired
-    RestClient tradingApiClient;
+    private RestClient tradingApiClient;
     
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     
     @Value("#{exchangeConfiguration.hmacKey}")
     String hmacKey;
@@ -59,7 +59,7 @@ public class ProxyFilterRegistrationBean extends FilterRegistrationBean<Filter> 
             proxyForward(userId, request, response);
         }
         
-        void proxyForward(Long userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        private void proxyForward(Long userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
             String authToken = null;
             if (userId != null) {
                 AuthToken token = new AuthToken(userId, System.currentTimeMillis() + 60_000);
@@ -89,7 +89,7 @@ public class ProxyFilterRegistrationBean extends FilterRegistrationBean<Filter> 
             }
         }
         
-        String readBody(HttpServletRequest request) throws IOException {
+        private String readBody(HttpServletRequest request) throws IOException {
             StringBuilder sb = new StringBuilder(2048);
             char[] buffer = new char[256];
             BufferedReader reader = request.getReader();
@@ -103,7 +103,7 @@ public class ProxyFilterRegistrationBean extends FilterRegistrationBean<Filter> 
             return sb.toString();
         }
         
-        Map<String, String> convertParams(Map<String, String[]> params) {
+        private Map<String, String> convertParams(Map<String, String[]> params) {
             Map<String, String> map = new HashMap<>();
             params.forEach((param, values) -> {
                 map.put(param, values[0]);
@@ -111,7 +111,7 @@ public class ProxyFilterRegistrationBean extends FilterRegistrationBean<Filter> 
             return map;
         }
         
-        void writeApiException(HttpServletRequest request, HttpServletResponse response, ApiException e)
+        private void writeApiException(HttpServletRequest request, HttpServletResponse response, ApiException e)
                 throws IOException {
             response.setStatus(400);
             response.setContentType("application/json;charset=utf-8");

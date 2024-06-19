@@ -7,7 +7,7 @@ import com.warp.exchange.api.ApiException;
 import com.warp.exchange.bean.OrderBookBean;
 import com.warp.exchange.bean.OrderRequestBean;
 import com.warp.exchange.bean.SimpleMatchDetailRecord;
-import com.warp.exchange.entity.trade.OrderEntity;
+import com.warp.exchange.entity.trade.order.OrderEntity;
 import com.warp.exchange.enums.ApiError;
 import com.warp.exchange.message.ApiResultMessage;
 import com.warp.exchange.message.event.OrderCancelEvent;

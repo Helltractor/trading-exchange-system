@@ -9,7 +9,7 @@ USE exchange;
 CREATE TABLE api_key_auths (
   apiKey VARCHAR(32) NOT NULL,
   apiSecret VARCHAR(32) NOT NULL,
-  expiresAt BIGINT NOT NULL
+  expiresAt BIGINT NOT NULL,
   userId BIGINT NOT NULL,
   PRIMARY KEY(apiKey)
 ) CHARACTER SET utf8 COLLATE utf8_general_ci AUTO_INCREMENT = 1000;
@@ -55,7 +55,7 @@ CREATE TABLE events (
 ) CHARACTER SET utf8 COLLATE utf8_general_ci AUTO_INCREMENT = 1000;
 
 
-CREATE TABLE hours_bars (
+CREATE TABLE hour_bars (
   startTime BIGINT NOT NULL,
   closePrice DECIMAL(36,18) NOT NULL,
   highPrice DECIMAL(36,18) NOT NULL,
@@ -78,8 +78,8 @@ CREATE TABLE match_details (
   sequenceId BIGINT NOT NULL,
   type VARCHAR(32) NOT NULL,
   userId BIGINT NOT NULL,
-  CONSTRAINT UNI_OID_COID UNIQUE (id, counterOrderId),
-  INDEX IDX_OID_CT (id,createTime),
+  CONSTRAINT UNI_OID_COID UNIQUE (orderId, counterOrderId),
+  INDEX IDX_OID_CT (orderId,createTime),
   PRIMARY KEY(id)
 ) CHARACTER SET utf8 COLLATE utf8_general_ci AUTO_INCREMENT = 1000;
 
@@ -103,7 +103,6 @@ CREATE TABLE orders (
   quantity DECIMAL(36,18) NOT NULL,
   sequenceId BIGINT NOT NULL,
   status VARCHAR(32) NOT NULL,
-  symbolId BIGINT NOT NULL,
   unfilledQuantity DECIMAL(36,18) NOT NULL,
   updateTime BIGINT NOT NULL,
   userId BIGINT NOT NULL,

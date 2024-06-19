@@ -1,4 +1,4 @@
-package com.warp.exchange.entity.trade;
+package com.warp.exchange.entity.trade.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.warp.exchange.enums.Direction;

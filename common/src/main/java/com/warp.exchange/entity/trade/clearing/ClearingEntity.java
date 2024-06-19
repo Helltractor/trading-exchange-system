@@ -1,4 +1,4 @@
-package com.warp.exchange.entity.trade;
+package com.warp.exchange.entity.trade.clearing;
 
 import com.warp.exchange.enums.ClearingType;
 import com.warp.exchange.enums.Direction;

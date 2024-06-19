@@ -1,6 +1,7 @@
-package com.warp.exchange.web.ui;
+package com.warp.exchange.filter;
 
 import com.warp.exchange.bean.AuthToken;
+import com.warp.exchange.service.CookieService;
 import com.warp.exchange.support.AbstractFilter;
 import com.warp.exchange.user.UserContext;
 import com.warp.exchange.user.UserService;
@@ -21,10 +22,10 @@ import java.io.IOException;
 public class UIFilterRegistrationBean extends FilterRegistrationBean<Filter> {
     
     @Autowired
-    UserService userService;
+    private UserService userService;
     
     @Autowired
-    CookieService cookieService;
+    private CookieService cookieService;
     
     @PostConstruct
     public void init() {

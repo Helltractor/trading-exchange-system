@@ -1,7 +1,6 @@
-package com.warp.exchange.trade.order;
+package com.warp.exchange.entity.trade.order;
 
 import com.warp.exchange.bean.OrderBookItemBean;
-import com.warp.exchange.entity.trade.OrderEntity;
 import com.warp.exchange.enums.Direction;
 
 import java.util.*;

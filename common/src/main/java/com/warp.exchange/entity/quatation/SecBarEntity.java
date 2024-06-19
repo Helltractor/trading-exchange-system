@@ -8,6 +8,6 @@ import jakarta.persistence.Table;
  * 秒线数据
  */
 @Entity
-@Table(name = "sec_bar")
+@Table(name = "sec_bars")
 public class SecBarEntity extends AbstractBarEntity {
 }

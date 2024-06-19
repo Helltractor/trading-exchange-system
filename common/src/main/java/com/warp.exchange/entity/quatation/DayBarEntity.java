@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
  * 日线数据
  */
 @Entity
-@Table(name = "day_bar")
+@Table(name = "day_bars")
 public class DayBarEntity extends AbstractBarEntity {
 
 }

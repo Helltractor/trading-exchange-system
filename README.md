@@ -20,14 +20,14 @@
         <img src='https://img.shields.io/badge/Maven-3.9.6-blue.svg' alt='maven'/>
     </a>
     <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">
-        <img src='https://img.shields.io/badge/Spring%20Boot-3.0.0-green.svg' alt='spring boot'/>
+        <img src='https://img.shields.io/badge/Spring%20Boot-3.2.0-green.svg' alt='spring boot'/>
     </a>
     <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">
         <img src='https://img.shields.io/badge/Spring%20Cloud-2023.0.0-green.svg' alt='spring boot'/>
     </a>
 </p>
 
-# Build container（in terminal）
+# Build container（in Terminal）
 
 1. `cd ./build`
 2. `docker-compose up --d`

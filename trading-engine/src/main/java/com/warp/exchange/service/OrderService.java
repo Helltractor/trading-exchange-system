@@ -1,6 +1,6 @@
 package com.warp.exchange.service;
 
-import com.warp.exchange.entity.trade.OrderEntity;
+import com.warp.exchange.entity.trade.order.OrderEntity;
 import com.warp.exchange.enums.AssetEnum;
 import com.warp.exchange.enums.Direction;
 import org.springframework.beans.factory.annotation.Autowired;

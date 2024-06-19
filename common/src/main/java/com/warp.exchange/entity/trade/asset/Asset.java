@@ -1,10 +1,11 @@
-package com.warp.exchange.trade.asset;
+package com.warp.exchange.entity.trade.asset;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 
 public class Asset {
+    
     public BigDecimal available;
     public BigDecimal frozen;
 

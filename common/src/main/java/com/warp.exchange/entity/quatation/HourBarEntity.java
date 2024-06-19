@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
  * 小时线数据
  */
 @Entity
-@Table(name = "hours_bar")
+@Table(name = "hours_bars")
 public class HourBarEntity extends AbstractBarEntity {
 
 }

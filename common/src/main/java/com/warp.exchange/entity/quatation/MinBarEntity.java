@@ -8,6 +8,6 @@ import jakarta.persistence.Table;
  * 分钟线数据
  */
 @Entity
-@Table(name = "min_bar")
+@Table(name = "min_bars")
 public class MinBarEntity extends AbstractBarEntity {
 }

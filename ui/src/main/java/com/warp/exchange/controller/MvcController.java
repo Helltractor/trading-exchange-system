@@ -1,4 +1,4 @@
-package com.warp.exchange.web.ui;
+package com.warp.exchange.controller;
 
 import com.warp.exchange.api.ApiException;
 import com.warp.exchange.bean.AuthToken;
@@ -7,6 +7,7 @@ import com.warp.exchange.client.RestClient;
 import com.warp.exchange.entity.ui.UserProfileEntity;
 import com.warp.exchange.enums.AssetEnum;
 import com.warp.exchange.enums.UserType;
+import com.warp.exchange.service.CookieService;
 import com.warp.exchange.support.LoggerSupport;
 import com.warp.exchange.user.UserContext;
 import com.warp.exchange.user.UserService;
@@ -186,7 +187,7 @@ public class MvcController extends LoggerSupport {
         return redirect("/");
     }
     
-    UserProfileEntity doSignup(String email, String name, String password) {
+    private UserProfileEntity doSignup(String email, String name, String password) {
         // 注册用户
         UserProfileEntity profile = userService.signup(email, name, password);
         // 本地开发环境下自动给用户增加资产
@@ -201,7 +202,7 @@ public class MvcController extends LoggerSupport {
         return profile;
     }
     
-    void deposit(Long userId, AssetEnum asset, BigDecimal amount) {
+    private void deposit(Long userId, AssetEnum asset, BigDecimal amount) {
         var req = new TransferRequestBean();
         req.transferId = HashUtil.sha256(userId + "/" + asset + "/" + amount.stripTrailingZeros().toPlainString())
                 .substring(0, 32);
@@ -249,7 +250,7 @@ public class MvcController extends LoggerSupport {
         return new ModelAndView("redirect:" + url);
     }
     
-    boolean isLocalDevEnv() {
+    private boolean isLocalDevEnv() {
         logger.info("activeProfiles: {}, defaultProfiles: {}", environment.getActiveProfiles(), environment.getDefaultProfiles());
         return environment.getActiveProfiles().length == 0
                 && Arrays.equals(environment.getDefaultProfiles(), new String[]{"default"});

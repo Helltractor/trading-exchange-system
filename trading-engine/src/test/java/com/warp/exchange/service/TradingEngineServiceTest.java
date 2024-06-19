@@ -1,4 +1,4 @@
-package com.warp.exchange;
+package com.warp.exchange.service;
 
 import com.warp.exchange.enums.AssetEnum;
 import com.warp.exchange.enums.Direction;
@@ -8,17 +8,13 @@ import com.warp.exchange.message.event.AbstractEvent;
 import com.warp.exchange.message.event.OrderCancelEvent;
 import com.warp.exchange.message.event.OrderRequestEvent;
 import com.warp.exchange.message.event.TransferEvent;
-import com.warp.exchange.service.AssetService;
-import com.warp.exchange.service.ClearingService;
-import com.warp.exchange.service.OrderService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TradingEngineServiceTest {
     static final Long USER_A = 11111L;
@@ -87,7 +83,7 @@ public class TradingEngineServiceTest {
             engine.validate();
         }
         
-        assertEquals("35216.4", engine.matchEngine.marketPrice.stripTrailingZeros().toPlainString());
+        Assertions.assertEquals("35216.4", engine.matchEngine.marketPrice.stripTrailingZeros().toPlainString());
     }
     
     TradingEngineService createTradingEngine() {

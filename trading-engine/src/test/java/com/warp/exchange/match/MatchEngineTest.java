@@ -1,6 +1,6 @@
 package com.warp.exchange.match;
 
-import com.warp.exchange.entity.trade.OrderEntity;
+import com.warp.exchange.entity.trade.order.OrderEntity;
 import com.warp.exchange.enums.Direction;
 import com.warp.exchange.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;

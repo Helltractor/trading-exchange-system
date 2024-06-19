@@ -1,4 +1,4 @@
-package com.warp.exchange.quatation;
+package com.warp.exchange.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.warp.exchange.entity.quatation.*;

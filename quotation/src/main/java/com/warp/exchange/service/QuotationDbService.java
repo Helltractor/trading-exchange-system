@@ -1,4 +1,4 @@
-package com.warp.exchange.quatation;
+package com.warp.exchange.service;
 
 import com.warp.exchange.entity.quatation.*;
 import com.warp.exchange.support.AbstractDbService;
