@@ -5,7 +5,7 @@
 	<strong>一个证券交易系统, 实现单一交易对的买卖功能</strong>
 </p>
 <p align="center">
-    <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">
+    <a target="blank" href="https://github.com/Helltractor/Securities-Trading-System">
         <img src="https://img.shields.io/github/stars/Helltractor/Securities-Trading-System.svg?style=social" alt="github star"/>
     </a>
     <a target="_blank" href="https://opensource.org/licenses/MIT">
@@ -16,7 +16,7 @@
     </a>
 <p/>
 <p align="center">
-    <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">
+    <a target="blank" href="https://github.com/Helltractor/Securities-Trading-System">
         <img src='https://img.shields.io/badge/Maven-3.9.6-blue.svg' alt='maven'/>
     </a>
     <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">

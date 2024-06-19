@@ -13,7 +13,7 @@ from sdk import ApiClient
 
 PAUSE_TIME = 1
 
-# C:\Python310\python.exe D:\Java\Warp-exchange\bot\bot.py --email=user0@example.com --password=password0
+# bot.py --email=user0@example.com --password=password0
 
 def main():
     parser = argparse.ArgumentParser(description='trading bot')

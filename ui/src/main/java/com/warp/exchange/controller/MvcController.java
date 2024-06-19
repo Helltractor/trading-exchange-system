@@ -56,7 +56,7 @@ public class MvcController extends LoggerSupport {
     public void init() {
         // 本地开发环境下自动创建用户user0@example.com ~ user9@example.com
         if (isLocalDevEnv()) {
-            for (int i = 0; i <= 9; i++) {
+            for (int i = 0; i <= 99; i++) {
                 String email = "user" + i + "@example.com";
                 String name = "User-" + i;
                 String password = "password" + i;
