@@ -56,3 +56,9 @@
 * [OkHttp3 使用详解](https://www.cnblogs.com/liyutian/p/9473747.html)
 * [OkHttp](https://square.github.io/okhttp/)
 * [GitHub](https://github.com/square/okhttp)
+
+## Vert.x
+
+* [Vert.x](https://vertx.io/)
+* [Vert.x China](https://vertx-china.github.io/)
+* [GitHub](https://github.com/vert-x3)

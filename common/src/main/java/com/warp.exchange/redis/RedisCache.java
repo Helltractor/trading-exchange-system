@@ -2,7 +2,7 @@ package com.warp.exchange.redis;
 
 public interface RedisCache {
     
-    public interface Topic {
+    interface Topic {
         
         String TRADING_API_RESULT = "trading_api_result";
         
@@ -10,7 +10,7 @@ public interface RedisCache {
         
     }
     
-    public interface Key {
+    interface Key {
         
         String ORDER_BOOK = "_orderbook_";
         

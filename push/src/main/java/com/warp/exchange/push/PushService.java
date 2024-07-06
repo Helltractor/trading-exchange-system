@@ -9,6 +9,9 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * 用于初始化和管理与Redis服务器的连接和消息处理，通过Vertx框架实现异步操作，并将接收到的Redis推送消息广播给其他组件。
+ */
 @Component
 public class PushService extends LoggerSupport {
     

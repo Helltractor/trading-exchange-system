@@ -53,7 +53,6 @@ public class QuotationService extends LoggerSupport {
     
     long sequenceId;
     
-    // TODO
     static <T extends AbstractBarEntity> T createBar(Supplier<T> fn, BigDecimal[] data) {
         if (data == null) {
             return null;
@@ -73,7 +72,7 @@ public class QuotationService extends LoggerSupport {
         // init redis lua script
         this.shaUpdateRecentTicksLua = this.redisService.loadScriptFromClassPath("/redis/update-recent-ticks.lua");
         this.shaUpdateBarLua = this.redisService.loadScriptFromClassPath("/redis/update-bar.lua");
-        // init mq
+        // init message queue
         String groupId = Messaging.Topic.TICK.name() + "_" + IpUtil.getHostId();
         this.tickConsumer = this.messagingFactory.createBatchMessageListener(Messaging.Topic.TICK, groupId, this::processMessages);
     }
@@ -118,7 +117,6 @@ public class QuotationService extends LoggerSupport {
                 highPrice = tick.price;
                 lowPrice = tick.price;
             } else {
-                // open price is set:
                 closePrice = tick.price;
                 highPrice = highPrice.max(tick.price);
                 lowPrice = lowPrice.min(tick.price);
@@ -133,8 +131,7 @@ public class QuotationService extends LoggerSupport {
         long minStartTime = min * 60 * 1000; // 分钟K的开始时间
         long hourStartTime = hour * 3600 * 1000; // 小时K的开始时间
         long dayStartTime = Instant.ofEpochMilli(hourStartTime).atZone(zoneId).withHour(0).toEpochSecond() * 1000; // 日K的开始时间，与TimeZone相关
-        
-        // 更新Redis最近的Ticks缓存:
+        // 更新Redis最近的Ticks缓存
         String ticksData = ticksJoiner.toString();
         if (logger.isDebugEnabled()) {
             logger.debug("generated ticks data: {}", ticksData);
@@ -145,10 +142,9 @@ public class QuotationService extends LoggerSupport {
         if (!tickOk.booleanValue()) {
             logger.warn("ticks are ignored by Redis.");
         }
-        // 保存Tick至数据库:
+        // 保存Tick至数据库
         this.quotationDbService.saveTicks(message.ticks);
-        
-        // 更新各种类型的K线:
+        // 更新各种类型的K线
         String strCreatedBars = redisService.executeScriptReturnString(this.shaUpdateBarLua,
                 new String[]{RedisCache.Key.SEC_BARS, RedisCache.Key.MIN_BARS, RedisCache.Key.HOUR_BARS,
                         RedisCache.Key.DAY_BARS},
@@ -164,8 +160,8 @@ public class QuotationService extends LoggerSupport {
                         String.valueOf(closePrice), // close
                         String.valueOf(quantity) // quantity
                 });
-        logger.info("returned created bars: " + strCreatedBars);
-        // 将Redis返回的K线保存至数据库:
+        logger.info("returned created bars: {}", strCreatedBars);
+        // 将Redis返回的K线保存至数据库
         Map<BarType, BigDecimal[]> barMap = JsonUtil.readJson(strCreatedBars, TYPE_BARS);
         if (!barMap.isEmpty()) {
             SecBarEntity secBar = createBar(SecBarEntity::new, barMap.get(BarType.SEC));

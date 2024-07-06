@@ -25,20 +25,26 @@ public class AbstractBarEntity implements EntitySupport {
             "MinBarEntity", DateTimeFormatter.ofPattern("dd HH:mm", Locale.US), //
             "HourBarEntity", DateTimeFormatter.ofPattern("MM-dd HH", Locale.US), //
             "DayBarEntity", DateTimeFormatter.ofPattern("yy-MM-dd", Locale.US));
+    
     /**
      * start timestamp in millisecond (included).
      */
     @Id
     @Column(nullable = false, updatable = false)
     public long startTime;
+    
     @Column(nullable = false, updatable = false, precision = PRECISION, scale = SCALE)
     public BigDecimal openPrice;
+    
     @Column(nullable = false, updatable = false, precision = PRECISION, scale = SCALE)
     public BigDecimal highPrice;
+    
     @Column(nullable = false, updatable = false, precision = PRECISION, scale = SCALE)
     public BigDecimal lowPrice;
+    
     @Column(nullable = false, updatable = false, precision = PRECISION, scale = SCALE)
     public BigDecimal closePrice;
+    
     @Column(nullable = false, updatable = false, precision = PRECISION, scale = SCALE)
     public BigDecimal quantity;
     
@@ -56,5 +62,10 @@ public class AbstractBarEntity implements EntitySupport {
         String time = FORMATTERS.get(getClass().getSimpleName()).format(zonedDateTime);
         return String.format("{%s: startTime=%s, O=%s, H=%s, L=%s, C=%s, qty=%s}", this.getClass().getSimpleName(),
                 time, this.openPrice, this.highPrice, this.lowPrice, this.closePrice, this.quantity);
+    }
+    
+    @Override
+    public String toString() {
+        return toString(ZoneId.systemDefault());
     }
 }

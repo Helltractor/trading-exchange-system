@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.warp.exchange</groupId>
-        <artifactId>Warp-exchange</artifactId>
+        <artifactId>warp-exchange</artifactId>
         <version>1.0</version>
     </parent>
 
