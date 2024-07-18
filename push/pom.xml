@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.warp.exchange</groupId>
-        <artifactId>warp-exchange</artifactId>
-        <version>1.0</version>
+        <groupId>com.exchange</groupId>
+        <artifactId>trading-exchange-system</artifactId>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>push</artifactId>
@@ -16,30 +16,38 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
+        <!-- 依赖SpringCloud Config客户端 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
+
+        <!-- 依赖Common模块 -->
         <dependency>
-            <groupId>com.warp.exchange</groupId>
+            <groupId>com.exchange</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
             <version>${vertx.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>
             <version>${vertx.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-redis-client</artifactId>

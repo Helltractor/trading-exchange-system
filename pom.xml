@@ -4,11 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.warp.exchange</groupId>
-    <artifactId>warp-exchange</artifactId>
-    <version>1.0</version>
+    <groupId>com.exchange</groupId>
+    <artifactId>trading-exchange-system</artifactId>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <modules>
+        <module>build</module>
+        <module>common</module>
         <module>config</module>
         <module>push</module>
         <module>quotation</module>
@@ -16,8 +18,6 @@
         <module>trading-engine</module>
         <module>trading-sequencer</module>
         <module>ui</module>
-        <module>common</module>
-        <module>build</module>
     </modules>
 
     <parent>
@@ -27,7 +27,7 @@
     </parent>
 
     <properties>
-        <project.version>1.0</project.version>
+        <project.version>0.0.1</project.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
@@ -35,6 +35,7 @@
         <springdoc.version>2.4.0</springdoc.version>
         <pebble.version>3.2.0</pebble.version>
         <vertx.version>4.3.1</vertx.version>
+        <mysql.version>8.0.33</mysql.version>
     </properties>
 
     <dependencyManagement>
@@ -56,16 +57,19 @@
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
+
         <!-- 依赖SpringTest -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -75,14 +79,11 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <!-- 引入创建可执行Jar的插件 -->
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>

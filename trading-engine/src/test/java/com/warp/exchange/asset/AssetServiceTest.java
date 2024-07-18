@@ -1,8 +1,8 @@
-package com.warp.exchange.asset;
+package com.exchange.asset;
 
-import com.warp.exchange.enums.AssetEnum;
-import com.warp.exchange.enums.Transfer;
-import com.warp.exchange.service.AssetService;
+import com.exchange.enums.AssetEnum;
+import com.exchange.enums.Transfer;
+import com.exchange.service.AssetService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

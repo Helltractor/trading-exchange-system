@@ -1,36 +1,37 @@
 <p align="center">
-	<strong>A Securities Trading System</strong>
+	<strong>Trading Exchange System</strong>
 </p>
 <p align="center">
-	<strong>一个证券交易系统, 实现单一交易对的买卖功能</strong>
+	<strong>证券交易系统, 实现单一交易对的买卖功能</strong>
 </p>
 <p align="center">
-    <a target="blank" href="https://github.com/Helltractor/Securities-Trading-System">
-        <img src="https://img.shields.io/github/stars/Helltractor/Securities-Trading-System.svg?style=social" alt="github star"/>
+    <a target="blank" href="https://github.com/Helltractor/trading-exchange-system">
+        <img src="https://img.shields.io/github/stars/Helltractor/trading-exchange-system.svg?style=social" alt="github star"/>
     </a>
     <a target="_blank" href="https://opensource.org/licenses/MIT">
         <img src="https://img.shields.io/:license-MIT-blue.svg" alt="license"/>
     </a>
-    <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">
+    <a target="_blank" href="https://github.com/Helltractor/trading-exchange-system">
         <img src='https://img.shields.io/badge/JDK-1.8.0_40+-green.svg' alt='jdk'/>
     </a>
 <p/>
 <p align="center">
-    <a target="blank" href="https://github.com/Helltractor/Securities-Trading-System">
+    <a target="blank" href="https://github.com/Helltractor/trading-exchange-system">
         <img src='https://img.shields.io/badge/Maven-3.9.6-blue.svg' alt='maven'/>
     </a>
-    <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">
+    <a target="_blank" href="https://github.com/Helltractor/trading-exchange-system">
         <img src='https://img.shields.io/badge/Spring%20Boot-3.2.0-green.svg' alt='spring boot'/>
     </a>
-    <a target="_blank" href="https://github.com/Helltractor/Securities-Trading-System">
+    <a target="_blank" href="https://github.com/Helltractor/trading-exchange-system">
         <img src='https://img.shields.io/badge/Spring%20Cloud-2023.0.0-green.svg' alt='spring boot'/>
     </a>
 </p>
 
-# Build container（in Terminal）
+# Build container and compile dependencies（in Terminal）
 
-1. `cd ./build`
-2. `docker-compose up --d`
+1. `mvn clean install`
+2. `cd ./build`
+3. `docker-compose up --d`
 
 # Run application（in IntelliJ IDEA）
 
@@ -41,8 +42,9 @@
 5. run `QuotationApplication.java`
 6. run` PushApplication.java`
 7. run `UIApplication.java`
+8. open `http://localhost:8080` in browser
 
-# Test
+# Test application
 
 > Mind: More details in [bot](./build/bot/README.md)
 

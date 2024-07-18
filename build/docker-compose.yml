@@ -9,7 +9,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     volumes:
-      - "./docker/zookeeper-data:/bitnami"
+      - ./docker/zookeeper-data:/bitnami
 
   kafka:
     image: bitnami/kafka:3.0
@@ -27,7 +27,7 @@ services:
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       - ALLOW_PLAINTEXT_LISTENER=yes
     volumes:
-      - "./docker/kafka-data:/bitnami"
+      - ./docker/kafka-data:/bitnami
 
   redis:
     image: redis:6.2
@@ -35,7 +35,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - "./docker/redis-data:/data"
+      - ./docker/redis-data:/data
 
   mysql:
     image: mysql:8.0
@@ -49,5 +49,7 @@ services:
       # MySQL:latest 已经弃用--default-authentication-plugin参数，使用MYSQL_AUTH_PLUGIN参数，才能够连接到数据库
       - MYSQL_AUTH_PLUGIN=caching_sha2_password
     volumes:
-      - "./sql/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql:ro"
-      - "./docker/mysql-data:/var/lib/mysql"
+      - ./mysql/schema.sql:/docker-entrypoint-initdb.d/exchange-schema.sql:ro
+      - ./mysql/conf/my.cnf:/etc/mysql/my.cnf
+      - ./docker/mysql-data:/var/lib/mysql
+      - ./docker/mysql-logs:/var/log/mysql

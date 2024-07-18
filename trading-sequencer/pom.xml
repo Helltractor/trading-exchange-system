@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.warp.exchange</groupId>
-        <artifactId>warp-exchange</artifactId>
-        <version>1.0</version>
+        <groupId>com.exchange</groupId>
+        <artifactId>trading-exchange-system</artifactId>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>trading-sequencer</artifactId>
@@ -22,7 +22,7 @@
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.warp.exchange</groupId>
+            <groupId>com.exchange</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -32,4 +32,13 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
