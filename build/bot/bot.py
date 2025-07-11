@@ -99,7 +99,7 @@ def get_world_price():
     with request.urlopen(req, timeout=5) as f:
         s = f.read()
         r = json.loads(s.decode("utf-8"))
-        p = r["last_trade_price"]
+        p = r["last_trade_price"] + 1000.0
         log(f"got price: {p}")
         WORLD_PRICE = (int(float(p)), time.time())
     return WORLD_PRICE[0]

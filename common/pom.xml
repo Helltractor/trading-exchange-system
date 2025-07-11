@@ -71,5 +71,9 @@
             <version>${spotbugs.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+    </build>
     
 </project>

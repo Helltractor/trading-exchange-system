@@ -71,9 +71,9 @@ services:
       - kafka
       - zookeeper
     environment:
-      - SPRING_CLOUD_CONFIG_SERVER_NATIVE=file:../../config-repo
+      - SPRING_CLOUD_CONFIG_SERVER_NATIVE=file:config-repo
     volumes:
-      - ../../config-repo:/config-repo
+      - ./config-repo:/config-repo
     networks:
       - docker-deploy
 

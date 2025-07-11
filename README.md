@@ -5,24 +5,24 @@
     <strong>一个高性能的证券交易系统，实现单一交易对的买卖功能</strong>
 </p>
 <p align="center">
-    <a target="blank" href="https://github.com/Helltractor/trading-exchange-system">
-        <img src="https://img.shields.io/github/stars/Helltractor/trading-exchange-system.svg?style=social" alt="GitHub Stars"/>
+    <a target="blank" href="https://github.com/helltractor/trading-exchange-system">
+        <img src="https://img.shields.io/github/stars/helltractor/trading-exchange-system.svg?style=social" alt="GitHub Stars"/>
     </a>
     <a target="_blank" href="https://opensource.org/licenses/MIT">
         <img src="https://img.shields.io/:license-GPL-blue.svg" alt="License"/>
     </a>
-    <a target="_blank" href="https://github.com/Helltractor/trading-exchange-system">
+    <a target="_blank" href="https://github.com/helltractor/trading-exchange-system">
         <img src="https://img.shields.io/badge/JDK-1.8.0_40+-green.svg" alt="JDK Version"/>
     </a>
 </p>
 <p align="center">
-    <a target="blank" href="https://github.com/Helltractor/trading-exchange-system">
+    <a target="blank" href="https://github.com/helltractor/trading-exchange-system">
         <img src='https://img.shields.io/badge/Maven-3.9.6-blue.svg' alt='Maven'/>
     </a>
-    <a target="_blank" href="https://github.com/Helltractor/trading-exchange-system">
+    <a target="_blank" href="https://github.com/helltractor/trading-exchange-system">
         <img src='https://img.shields.io/badge/Spring%20Boot-3.2.0-green.svg' alt='Spring Boot'/>
     </a>
-    <a target="_blank" href="https://github.com/Helltractor/trading-exchange-system">
+    <a target="_blank" href="https://github.com/helltractor/trading-exchange-system">
         <img src='https://img.shields.io/badge/Spring%20Cloud-2023.0.0-green.svg' alt='Spring Cloud'/>
     </a>
 </p>
@@ -86,7 +86,7 @@ java -jar ui/target/ui.jar
 mvn spring-boot:run
 ```
 
-启动完成后，访问浏览器： 👉 [http://localhost:8080](http://localhost:8080)
+启动完成后，访问浏览器： 👉 [http://localhost:8000/signin](http://localhost:8000/signin)
 
 ## 🧪 测试项目
 
