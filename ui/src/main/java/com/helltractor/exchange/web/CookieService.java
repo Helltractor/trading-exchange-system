@@ -1,16 +1,18 @@
 package com.helltractor.exchange.web;
 
+import java.time.Duration;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.helltractor.exchange.bean.AuthToken;
 import com.helltractor.exchange.support.LoggerSupport;
 import com.helltractor.exchange.util.HttpUtil;
+
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.time.Duration;
 
 @Component
 public class CookieService extends LoggerSupport {
@@ -37,7 +39,7 @@ public class CookieService extends LoggerSupport {
             if (SESSION_COOKIE.equals(cookie.getName())) {
                 String cookieStr = cookie.getValue();
                 AuthToken token = AuthToken.fromSecureString(cookieStr, this.hmacKey);
-                return token.isExpired() ? null : token;
+                return token;
             }
         }
         return null;

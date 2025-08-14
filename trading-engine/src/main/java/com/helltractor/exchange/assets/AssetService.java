@@ -1,9 +1,5 @@
 package com.helltractor.exchange.assets;
 
-import com.helltractor.exchange.enums.AssetEnum;
-import com.helltractor.exchange.support.LoggerSupport;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.springframework.stereotype.Component;
+
+import com.helltractor.exchange.enums.AssetEnum;
+import com.helltractor.exchange.support.LoggerSupport;
 
 /**
  * Asset service. Need multi-thread safe.

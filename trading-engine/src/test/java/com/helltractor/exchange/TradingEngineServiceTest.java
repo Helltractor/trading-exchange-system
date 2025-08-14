@@ -1,5 +1,15 @@
 package com.helltractor.exchange;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Random;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+
 import com.helltractor.exchange.assets.AssetService;
 import com.helltractor.exchange.clearing.ClearingService;
 import com.helltractor.exchange.enums.AssetEnum;
@@ -10,14 +20,9 @@ import com.helltractor.exchange.message.event.AbstractEvent;
 import com.helltractor.exchange.message.event.OrderCancelEvent;
 import com.helltractor.exchange.message.event.OrderRequestEvent;
 import com.helltractor.exchange.message.event.TransferEvent;
+import com.helltractor.exchange.model.trade.TransferLogEntity;
 import com.helltractor.exchange.order.OrderService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Random;
+import com.helltractor.exchange.store.StoreService;
 
 public class TradingEngineServiceTest {
 
@@ -93,10 +98,13 @@ public class TradingEngineServiceTest {
         var assetService = new AssetService();
         var orderService = new OrderService(assetService);
         var clearingService = new ClearingService(assetService, orderService);
+        var storeService = org.mockito.Mockito.mock(StoreService.class);
+        doNothing().when(storeService).insertTransferLog(any(TransferLogEntity.class));
         tradingEngine.matchEngine = matchEngine;
         tradingEngine.assetService = assetService;
         tradingEngine.orderService = orderService;
         tradingEngine.clearingService = clearingService;
+        tradingEngine.storeService = storeService;
         return tradingEngine;
     }
 

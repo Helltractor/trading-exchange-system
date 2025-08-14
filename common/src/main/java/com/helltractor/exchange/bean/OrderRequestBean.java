@@ -1,20 +1,20 @@
 package com.helltractor.exchange.bean;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import com.helltractor.exchange.ApiError;
 import com.helltractor.exchange.ApiException;
 import com.helltractor.exchange.enums.Direction;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 public class OrderRequestBean implements ValidatableBean {
-    
+
     public Direction direction;
-    
+
     public BigDecimal price;
-    
+
     public BigDecimal quantity;
-    
+
     @Override
     public void validate() {
         if (this.direction == null) {

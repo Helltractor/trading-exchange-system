@@ -1,5 +1,21 @@
 package com.helltractor.exchange.web;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Random;
+import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.helltractor.exchange.ApiException;
 import com.helltractor.exchange.bean.AuthToken;
 import com.helltractor.exchange.bean.TransferRequestBean;
@@ -11,24 +27,10 @@ import com.helltractor.exchange.model.ui.UserProfileEntity;
 import com.helltractor.exchange.support.LoggerSupport;
 import com.helltractor.exchange.user.UserService;
 import com.helltractor.exchange.util.HashUtil;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
-import java.util.regex.Pattern;
 
 @Controller
 public class MvcController extends LoggerSupport {
@@ -52,9 +54,9 @@ public class MvcController extends LoggerSupport {
 
     @PostConstruct
     public void init() {
-        // init users: user0@example.com ~ user99@example.com
+        // init users: user0@example.com ~ user9@example.com
         if (isLocalDevEnv()) {
-            for (int i = 0; i <= 99; i++) {
+            for (int i = 0; i <= 9; i++) {
                 String email = "user" + i + "@example.com";
                 String name = "User-" + i;
                 String password = "password" + i;

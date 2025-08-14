@@ -43,6 +43,7 @@ import com.helltractor.exchange.messaging.MessagingFactory;
 import com.helltractor.exchange.model.quatation.TickEntity;
 import com.helltractor.exchange.model.trade.MatchDetailEntity;
 import com.helltractor.exchange.model.trade.OrderEntity;
+import com.helltractor.exchange.model.trade.TransferLogEntity;
 import com.helltractor.exchange.order.OrderService;
 import com.helltractor.exchange.redis.RedisCache;
 import com.helltractor.exchange.redis.RedisService;
@@ -58,7 +59,7 @@ import jakarta.annotation.PreDestroy;
 public class TradingEngineService extends LoggerSupport {
 
     @Autowired(required = false)
-    private final ZoneId zoneId = ZoneId.systemDefault();
+    final ZoneId zoneId = ZoneId.systemDefault();
 
     @Autowired
     ClearingService clearingService;
@@ -182,6 +183,7 @@ public class TradingEngineService extends LoggerSupport {
 
     private void runOrderBookThread() {
         logger.info("start update orderbook snapshot to redis...");
+        long lastSequenceId = 0;
         for (;;) {
             // 获取OrderBookBean的引用，确保后续操作针对局部变量而非成员变量
             final OrderBookBean orderBook = this.latestOrderBook;
@@ -257,6 +259,8 @@ public class TradingEngineService extends LoggerSupport {
         }
         // 判断是否丢失了消息
         if (event.previousId > this.lastSequenceId) {
+            logger.warn("event lost: expected previous id {} but actual {} for event {}", this.lastSequenceId,
+                    event.previousId, event);
             List<AbstractEvent> events = storeService.loadEventFromDb(this.lastSequenceId);
             if (events.isEmpty()) {
                 logger.error("cannot load lost event from db.");
@@ -284,7 +288,8 @@ public class TradingEngineService extends LoggerSupport {
             } else if (event instanceof OrderCancelEvent) {
                 cancelOrder((OrderCancelEvent) event);
             } else if (event instanceof TransferEvent) {
-                transfer((TransferEvent) event);
+                boolean ok = transfer((TransferEvent) event);
+                saveTransferEventToDb((TransferEvent) event, ok);
             } else {
                 logger.error("unable to process event type: {}", event.getClass().getName());
                 panic();
@@ -595,5 +600,21 @@ public class TradingEngineService extends LoggerSupport {
         logger.error("Application panic. Exit now...");
         this.fatalError = true;
         System.exit(1);
+    }
+
+    private void saveTransferEventToDb(TransferEvent transferEvent, boolean success) {
+        TransferLogEntity transferLog = new TransferLogEntity();
+
+        transferLog.transferId = transferEvent.uniqueId;
+        transferLog.fromUserId = transferEvent.fromUserId;
+        transferLog.toUserId = transferEvent.toUserId;
+        transferLog.asset = transferEvent.asset;
+        transferLog.amount = transferEvent.amount;
+        transferLog.createTime = transferEvent.createTime;
+        transferLog.status = success;
+        this.storeService.insertTransferLog(transferLog);
+        if (logger.isDebugEnabled()) {
+            logger.debug("saved transfer event to db: {}", transferLog);
+        }
     }
 }

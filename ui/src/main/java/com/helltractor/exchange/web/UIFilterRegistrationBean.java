@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.helltractor.exchange.bean.AuthToken;
 import com.helltractor.exchange.ctx.UserContext;
 import com.helltractor.exchange.support.AbstractFilter;
-import com.helltractor.exchange.user.UserService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.Filter;
@@ -25,9 +24,6 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @Component
 public class UIFilterRegistrationBean extends FilterRegistrationBean<Filter> {
-
-    @Autowired
-    UserService userService;
 
     @Autowired
     CookieService cookieService;
@@ -57,7 +53,15 @@ public class UIFilterRegistrationBean extends FilterRegistrationBean<Filter> {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("text/html;charset=UTF-8");
             // try parse user
-            AuthToken auth = cookieService.findSessionCookie(request);
+            AuthToken auth = null;
+            try {
+                auth = cookieService.findSessionCookie(request);
+            } catch (IllegalArgumentException e) {
+                logger.warn("Invalid session token: {}", e.getMessage());
+                // redirect signin index
+                response.sendRedirect("/signin");
+                return;
+            }
             if (auth != null && auth.isAboutToExpire()) {
                 logger.info("refresh session cookie...");
                 cookieService.setSessionCookie(request, response, auth.refresh());
