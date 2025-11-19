@@ -1,9 +1,5 @@
 package com.helltractor.exchange.user;
 
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.helltractor.exchange.ApiError;
 import com.helltractor.exchange.ApiException;
 import com.helltractor.exchange.enums.UserType;
@@ -13,6 +9,9 @@ import com.helltractor.exchange.model.ui.UserProfileEntity;
 import com.helltractor.exchange.support.AbstractDbService;
 import com.helltractor.exchange.util.HashUtil;
 import com.helltractor.exchange.util.RandomUtil;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional

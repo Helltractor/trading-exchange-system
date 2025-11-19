@@ -1,5 +1,12 @@
 package com.helltractor.exchange.db;
 
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -13,16 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
-
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-
 public final class Mapper<T> {
-
+    
     static List<String> columnDefinitionSortBy = Arrays.asList("BIT", "BOOL", "TINYINT", "SMALLINT", "MEDIUMINT", "INT",
             "INTEGER", "BIGINT", "FLOAT", "REAL", "DOUBLE", "DECIMAL", "YEAR", "DATE", "TIME", "DATETIME", "TIMESTAMP",
             "VARCHAR", "CHAR", "BLOB", "TEXT", "MEDIUMTEXT");
@@ -30,7 +29,7 @@ public final class Mapper<T> {
     final Class<T> entityClass;
     final Constructor<T> constructor;
     final String tableName;
-    // @Id property:
+    // @Id property
     final AccessibleProperty id;
     // all properties including @Id, key is property name
     final List<AccessibleProperty> allProperties;
@@ -46,7 +45,7 @@ public final class Mapper<T> {
     final String insertIgnoreSQL;
     final String updateSQL;
     final String deleteSQL;
-
+    
     public Mapper(Class<T> clazz) throws Exception {
         List<AccessibleProperty> all = getProperties(clazz);
         AccessibleProperty[] ids = all.stream().filter(AccessibleProperty::isId).toArray(AccessibleProperty[]::new);
@@ -69,7 +68,7 @@ public final class Mapper<T> {
         this.insertIgnoreSQL = this.insertSQL.replace("INSERT INTO", "INSERT IGNORE INTO");
         this.updateSQL = "UPDATE " + this.tableName + " SET "
                 + String.join(", ",
-                        this.updatableProperties.stream().map(p -> p.propertyName + " = ?").toArray(String[]::new))
+                this.updatableProperties.stream().map(p -> p.propertyName + " = ?").toArray(String[]::new))
                 + " WHERE " + this.id.propertyName + " = ?";
         this.deleteSQL = "DELETE FROM " + this.tableName + " WHERE " + this.id.propertyName + " = ?";
         this.resultSetExtractor = new ResultSetExtractor<>() {
@@ -101,7 +100,7 @@ public final class Mapper<T> {
             }
         };
     }
-
+    
     static int columnDefinitionSortIndex(String definition) {
         int pos = definition.indexOf('(');
         if (pos > 0) {
@@ -110,15 +109,15 @@ public final class Mapper<T> {
         int index = columnDefinitionSortBy.indexOf(definition.toUpperCase());
         return index == (-1) ? Integer.MAX_VALUE : index;
     }
-
+    
     public T newInstance() throws ReflectiveOperationException {
         return this.constructor.newInstance();
     }
-
+    
     Object getIdValue(Object bean) throws ReflectiveOperationException {
         return this.id.get(bean);
     }
-
+    
     Map<String, AccessibleProperty> buildPropertiesMap(List<AccessibleProperty> props) {
         Map<String, AccessibleProperty> map = new HashMap<>();
         for (AccessibleProperty prop : props) {
@@ -126,14 +125,14 @@ public final class Mapper<T> {
         }
         return map;
     }
-
+    
     private String numOfQuestions(int n) {
         String[] qs = new String[n];
         return String.join(", ", Arrays.stream(qs).map((s) -> {
             return "?";
         }).toArray(String[]::new));
     }
-
+    
     private String getTableName(Class<?> clazz) {
         Table table = clazz.getAnnotation(Table.class);
         if (table != null && !table.name().isEmpty()) {
@@ -142,7 +141,7 @@ public final class Mapper<T> {
         String name = clazz.getSimpleName();
         return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
-
+    
     private List<AccessibleProperty> getProperties(Class<?> clazz) throws Exception {
         List<AccessibleProperty> properties = new ArrayList<>();
         for (Field f : clazz.getFields()) {
@@ -158,34 +157,34 @@ public final class Mapper<T> {
         }
         return properties;
     }
-
+    
     public String ddl() {
         StringBuilder sb = new StringBuilder(256);
         sb.append("CREATE TABLE ").append(this.tableName).append(" (\n");
         sb.append(String.join(",\n", this.allProperties.stream().sorted((o1, o2) -> {
-            // sort by ID first:
+            // sort by ID first
             if (o1.isId()) {
                 return -1;
             }
             if (o2.isId()) {
                 return 1;
             }
-            // sort by columnName:
+            // sort by columnName
             return o1.propertyName.compareTo(o2.propertyName);
         }).map((p) -> {
             return "  " + p.propertyName + " " + p.columnDefinition;
         }).toArray(String[]::new)));
         sb.append(",\n");
-        // add unique key:
+        // add unique key
         sb.append(getUniqueKey());
-        // add index:
+        // add index
         sb.append(getIndex());
-        // add primary key:
+        // add primary key
         sb.append("  PRIMARY KEY(").append(this.id.propertyName).append(")\n");
         sb.append(") CHARACTER SET utf8 COLLATE utf8_general_ci AUTO_INCREMENT = 1000;\n");
         return sb.toString();
     }
-
+    
     String getUniqueKey() {
         Table table = this.entityClass.getAnnotation(Table.class);
         if (table != null) {
@@ -198,7 +197,7 @@ public final class Mapper<T> {
         }
         return "";
     }
-
+    
     String getIndex() {
         Table table = this.entityClass.getAnnotation(Table.class);
         if (table != null) {

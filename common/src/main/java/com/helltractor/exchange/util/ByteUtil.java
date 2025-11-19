@@ -3,7 +3,7 @@ package com.helltractor.exchange.util;
 import java.util.HexFormat;
 
 public class ByteUtil {
-
+    
     /**
      * Convert bytes to hex string (all lower-case).
      *
@@ -13,7 +13,7 @@ public class ByteUtil {
     public static String toHexString(byte[] b) {
         return HexFormat.of().formatHex(b);
     }
-
+    
     /**
      * Convert byte to hex string (all lower-case).
      *

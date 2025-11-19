@@ -1,8 +1,8 @@
 package com.helltractor.exchange.bean;
 
-import java.math.BigDecimal;
-
 import com.helltractor.exchange.enums.MatchType;
+
+import java.math.BigDecimal;
 
 public record SimpleMatchDetailRecord(BigDecimal price, BigDecimal quantity, MatchType type) {
 

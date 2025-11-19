@@ -1,22 +1,5 @@
 package com.helltractor.exchange;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import com.helltractor.exchange.assets.Asset;
 import com.helltractor.exchange.assets.AssetService;
 import com.helltractor.exchange.assets.Transfer;
@@ -51,63 +34,66 @@ import com.helltractor.exchange.store.StoreService;
 import com.helltractor.exchange.support.LoggerSupport;
 import com.helltractor.exchange.util.IpUtil;
 import com.helltractor.exchange.util.JsonUtil;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class TradingEngineService extends LoggerSupport {
-
+    
     @Autowired(required = false)
     final ZoneId zoneId = ZoneId.systemDefault();
-
-    @Autowired
-    ClearingService clearingService;
-
-    @Autowired
-    OrderService orderService;
-
-    @Autowired
-    AssetService assetService;
-
-    @Autowired
-    MatchEngine matchEngine;
-
-    @Autowired
-    RedisService redisService;
-
-    @Autowired
-    StoreService storeService;
-
-    @Autowired
-    MessagingFactory messagingFactory;
-
     @Value("#{exchangeConfiguration.orderBookDepth}")
     private final int orderBookDepth = 100;
-
     @Value("#{exchangeConfiguration.debugMode}")
     private final boolean debugMode = false;
-
+    private final Queue<List<OrderEntity>> orderQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<List<MatchDetailEntity>> matchQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<TickMessage> tickQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<ApiResultMessage> apiResultQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<NotificationMessage> notificationQueue = new ConcurrentLinkedQueue<>();
+    @Autowired
+    ClearingService clearingService;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    AssetService assetService;
+    @Autowired
+    MatchEngine matchEngine;
+    @Autowired
+    RedisService redisService;
+    @Autowired
+    StoreService storeService;
+    @Autowired
+    MessagingFactory messagingFactory;
     private boolean fatalError = false;
     private MessageConsumer consumer;
     private MessageProducer<TickMessage> producer;
     private long lastSequenceId = 0;
     private boolean orderBookChanged = false;
     private String shaUpdateOrderBookLua;
-
     private Thread tickThread;
     private Thread notifyThread;
     private Thread apiResultThread;
     private Thread orderBookThread;
     private Thread dbThread;
-
     private OrderBookBean latestOrderBook = null;
-    private final Queue<List<OrderEntity>> orderQueue = new ConcurrentLinkedQueue<>();
-    private final Queue<List<MatchDetailEntity>> matchQueue = new ConcurrentLinkedQueue<>();
-    private final Queue<TickMessage> tickQueue = new ConcurrentLinkedQueue<>();
-    private final Queue<ApiResultMessage> apiResultQueue = new ConcurrentLinkedQueue<>();
-    private final Queue<NotificationMessage> notificationQueue = new ConcurrentLinkedQueue<>();
-
+    
     @PostConstruct
     public void init() {
         this.shaUpdateOrderBookLua = this.redisService.loadScriptFromClassPath("/redis/update-orderbook.lua");
@@ -125,19 +111,19 @@ public class TradingEngineService extends LoggerSupport {
         this.dbThread = new Thread(this::runDbThread, "async-db");
         this.dbThread.start();
     }
-
+    
     @PreDestroy
     public void destroy() {
         this.consumer.stop();
         this.orderBookThread.interrupt();
         this.dbThread.interrupt();
     }
-
+    
     private void runTickThread() {
         logger.info("start tick thread...");
-        for (;;) {
+        for (; ; ) {
             List<TickMessage> messages = new ArrayList<>();
-            for (;;) {
+            for (; ; ) {
                 TickMessage message = this.tickQueue.poll();
                 if (message != null) {
                     messages.add(message);
@@ -163,10 +149,10 @@ public class TradingEngineService extends LoggerSupport {
             }
         }
     }
-
+    
     private void runNotifyThread() {
         logger.info("start publish notify to redis...");
-        for (;;) {
+        for (; ; ) {
             NotificationMessage message = this.notificationQueue.poll();
             if (message != null) {
                 redisService.publish(RedisCache.Topic.NOTIFICATION, JsonUtil.writeJson(message));
@@ -180,11 +166,11 @@ public class TradingEngineService extends LoggerSupport {
             }
         }
     }
-
+    
     private void runOrderBookThread() {
         logger.info("start update orderbook snapshot to redis...");
         long lastSequenceId = 0;
-        for (;;) {
+        for (; ; ) {
             // 获取OrderBookBean的引用，确保后续操作针对局部变量而非成员变量
             final OrderBookBean orderBook = this.latestOrderBook;
             // 仅在OrderBookBean更新后刷新Redis
@@ -208,10 +194,10 @@ public class TradingEngineService extends LoggerSupport {
             }
         }
     }
-
+    
     private void runApiResultThread() {
         logger.info("start publish api result to redis...");
-        for (;;) {
+        for (; ; ) {
             ApiResultMessage result = this.apiResultQueue.poll();
             if (result != null) {
                 redisService.publish(RedisCache.Topic.TRADING_API_RESULT, JsonUtil.writeJson(result));
@@ -225,10 +211,10 @@ public class TradingEngineService extends LoggerSupport {
             }
         }
     }
-
+    
     private void runDbThread() {
         logger.info("start batch insert to database...");
-        for (;;) {
+        for (; ; ) {
             try {
                 saveToDb();
             } catch (InterruptedException e) {
@@ -237,7 +223,7 @@ public class TradingEngineService extends LoggerSupport {
             }
         }
     }
-
+    
     public void processMessages(List<AbstractEvent> messages) {
         for (AbstractEvent message : messages) {
             processEvent(message);
@@ -247,7 +233,7 @@ public class TradingEngineService extends LoggerSupport {
             this.latestOrderBook = this.matchEngine.getOrderBook(this.orderBookDepth);
         }
     }
-
+    
     public void processEvent(AbstractEvent event) {
         if (this.fatalError) {
             return;
@@ -309,7 +295,7 @@ public class TradingEngineService extends LoggerSupport {
             this.debug();
         }
     }
-
+    
     private void createOrder(OrderRequestEvent event) {
         // 创建订单ID
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(event.createTime), zoneId);
@@ -377,7 +363,7 @@ public class TradingEngineService extends LoggerSupport {
             this.notificationQueue.addAll(notifications);
         }
     }
-
+    
     private NotificationMessage createNotification(long ts, String type, Long userId, Object data) {
         NotificationMessage msg = new NotificationMessage();
         msg.createTime = ts;
@@ -386,7 +372,7 @@ public class TradingEngineService extends LoggerSupport {
         msg.data = data;
         return msg;
     }
-
+    
     private void cancelOrder(OrderCancelEvent event) {
         OrderEntity order = this.orderService.getOrder(event.refOrderId);
         if (order == null || order.userId.longValue() != event.userId.longValue()) {
@@ -401,16 +387,16 @@ public class TradingEngineService extends LoggerSupport {
         this.apiResultQueue.add(ApiResultMessage.orderSuccess(event.refId, order, event.createTime));
         this.notificationQueue.add(createNotification(event.createTime, "order_canceled", order.userId, order));
     }
-
+    
     private boolean transfer(TransferEvent event) {
         return this.assetService.tryTransfer(Transfer.AVAILABLE_TO_AVAILABLE, event.fromUserId, event.toUserId,
                 event.asset, event.amount, event.sufficient);
     }
-
+    
     private void saveToDb() throws InterruptedException {
         if (!matchQueue.isEmpty()) {
             List<MatchDetailEntity> batch = new ArrayList<>(1000);
-            for (;;) {
+            for (; ; ) {
                 List<MatchDetailEntity> matches = matchQueue.poll();
                 if (matches != null) {
                     batch.addAll(matches);
@@ -429,7 +415,7 @@ public class TradingEngineService extends LoggerSupport {
         }
         if (!orderQueue.isEmpty()) {
             List<OrderEntity> batch = new ArrayList<>(1000);
-            for (;;) {
+            for (; ; ) {
                 List<OrderEntity> orders = orderQueue.poll();
                 if (orders != null) {
                     batch.addAll(orders);
@@ -450,7 +436,7 @@ public class TradingEngineService extends LoggerSupport {
             Thread.sleep(1);
         }
     }
-
+    
     private MatchDetailEntity generateMatchDetailEntity(long sequenceId, long timeStamp, MatchDetailRecord detail, boolean forTaker) {
         MatchDetailEntity entity = new MatchDetailEntity();
         entity.sequenceId = sequenceId;
@@ -465,7 +451,7 @@ public class TradingEngineService extends LoggerSupport {
         entity.createTime = timeStamp;
         return entity;
     }
-
+    
     void validate() {
         logger.debug("start validate...");
         validateAssets();
@@ -473,7 +459,7 @@ public class TradingEngineService extends LoggerSupport {
         validateMatchEngine();
         logger.debug("validate ok.");
     }
-
+    
     private void validateAssets() {
         // 验证系统资产完整性
         BigDecimal totalUSD = BigDecimal.ZERO;
@@ -495,12 +481,9 @@ public class TradingEngineService extends LoggerSupport {
                     require(asset.getFrozen().signum() >= 0, "Trader has negative frozen: " + asset);
                 }
                 switch (assetId) {
-                    case USD ->
-                        totalUSD = totalUSD.add(asset.getTotal());
-                    case BTC ->
-                        totalBTC = totalBTC.add(asset.getTotal());
-                    default ->
-                        require(false, "Unexpected assets id: " + assetId);
+                    case USD -> totalUSD = totalUSD.add(asset.getTotal());
+                    case BTC -> totalBTC = totalBTC.add(asset.getTotal());
+                    default -> require(false, "Unexpected assets id: " + assetId);
                 }
             }
         }
@@ -508,7 +491,7 @@ public class TradingEngineService extends LoggerSupport {
         require(totalUSD.signum() == 0, "Non zero USD balance: " + totalUSD);
         require(totalBTC.signum() == 0, "Non zero BTC balance: " + totalBTC);
     }
-
+    
     private void validateOrders() {
         // 验证订单
         Map<Long, Map<AssetEnum, BigDecimal>> userOrderFrozen = new HashMap<>();
@@ -565,7 +548,7 @@ public class TradingEngineService extends LoggerSupport {
             require(frozenAssets.isEmpty(), "User " + userId + " has unexpected frozen for order: " + frozenAssets);
         }
     }
-
+    
     private void validateMatchEngine() {
         // OrderBook的Order必须在ActiveOrders中
         Map<Long, OrderEntity> copyOfActiveOrders = new HashMap<>(this.orderService.getActiveOrders());
@@ -580,7 +563,7 @@ public class TradingEngineService extends LoggerSupport {
         // activeOrders的所有Order必须在Order Book中
         require(copyOfActiveOrders.isEmpty(), "Not all active orders are in order book.");
     }
-
+    
     public void debug() {
         System.out.println("========== trading engine ==========");
         this.assetService.debug();
@@ -588,23 +571,23 @@ public class TradingEngineService extends LoggerSupport {
         this.matchEngine.debug();
         System.out.println("========== // trading engine ==========");
     }
-
+    
     private void require(boolean condition, String errorMessage) {
         if (!condition) {
             logger.error("validate failed: {}", errorMessage);
             panic();
         }
     }
-
+    
     private void panic() {
         logger.error("Application panic. Exit now...");
         this.fatalError = true;
         System.exit(1);
     }
-
+    
     private void saveTransferEventToDb(TransferEvent transferEvent, boolean success) {
         TransferLogEntity transferLog = new TransferLogEntity();
-
+        
         transferLog.transferId = transferEvent.uniqueId;
         transferLog.fromUserId = transferEvent.fromUserId;
         transferLog.toUserId = transferEvent.toUserId;

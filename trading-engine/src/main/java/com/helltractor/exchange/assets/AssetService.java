@@ -1,5 +1,9 @@
 package com.helltractor.exchange.assets;
 
+import com.helltractor.exchange.enums.AssetEnum;
+import com.helltractor.exchange.support.LoggerSupport;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,36 +12,31 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.springframework.stereotype.Component;
-
-import com.helltractor.exchange.enums.AssetEnum;
-import com.helltractor.exchange.support.LoggerSupport;
-
 /**
  * Asset service. Need multi-thread safe.
  */
 @Component
 public class AssetService extends LoggerSupport {
-
+    
     // UserId -> Map(AssetEnum -> Assets[available/frozen])
     public final ConcurrentMap<Long, ConcurrentMap<AssetEnum, Asset>> userAssets = new ConcurrentHashMap<>();
-
+    
     public Asset getAsset(Long userId, AssetEnum assetId) {
         ConcurrentMap<AssetEnum, Asset> assets = userAssets.get(userId);
         return assets == null ? null : assets.get(assetId);
     }
-
+    
     public Map<AssetEnum, Asset> getAssets(Long userId) {
         Map<AssetEnum, Asset> assets = userAssets.get(userId);
         return assets == null ? Map.of() : assets;
     }
-
+    
     public ConcurrentMap<Long, ConcurrentMap<AssetEnum, Asset>> getUserAssets() {
         return this.userAssets;
     }
-
+    
     public boolean tryTransfer(Transfer type, Long fromUserId, Long toUserId, AssetEnum assetId,
-            BigDecimal amount, boolean checkBalance) {
+                               BigDecimal amount, boolean checkBalance) {
         if (amount.signum() == 0) {
             return true;
         }
@@ -94,7 +93,7 @@ public class AssetService extends LoggerSupport {
             }
         };
     }
-
+    
     public void transfer(Transfer type, Long fromUserId, Long toUserId, AssetEnum assetId, BigDecimal amount) {
         if (!tryTransfer(type, fromUserId, toUserId, assetId, amount, true)) {
             throw new RuntimeException("Transfer failed for " + type + ", from user " + fromUserId + " to user " + toUserId
@@ -104,7 +103,7 @@ public class AssetService extends LoggerSupport {
             logger.debug("transfer assets {}, from {} => {}, amount {}", assetId, fromUserId, toUserId, amount);
         }
     }
-
+    
     public boolean tryFreeze(Long userId, AssetEnum assetId, BigDecimal amount) {
         boolean ok = tryTransfer(Transfer.AVAILABLE_TO_FROZEN, userId, userId, assetId, amount, true);
         if (ok && logger.isDebugEnabled()) {
@@ -112,7 +111,7 @@ public class AssetService extends LoggerSupport {
         }
         return ok;
     }
-
+    
     public void unfreeze(Long userId, AssetEnum assetId, BigDecimal amount) {
         if (!tryTransfer(Transfer.FROZEN_TO_AVAILABLE, userId, userId, assetId, amount, true)) {
             throw new RuntimeException(
@@ -122,13 +121,13 @@ public class AssetService extends LoggerSupport {
             logger.debug("unfreezed user {}, assets {}, amount {}", userId, assetId, amount);
         }
     }
-
+    
     private Asset initAssets(Long userId, AssetEnum assetId) {
         return userAssets
                 .computeIfAbsent(userId, k -> new ConcurrentHashMap<>())
                 .computeIfAbsent(assetId, k -> new Asset());
     }
-
+    
     public void debug() {
         System.out.println("---------- assets ----------");
         List<Long> userIds = new ArrayList<>(userAssets.keySet());

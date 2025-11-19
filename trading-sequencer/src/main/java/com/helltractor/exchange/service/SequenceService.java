@@ -1,15 +1,5 @@
 package com.helltractor.exchange.service;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.listener.CommonErrorHandler;
-import org.springframework.kafka.listener.MessageListenerContainer;
-import org.springframework.stereotype.Component;
-
 import com.helltractor.exchange.message.event.AbstractEvent;
 import com.helltractor.exchange.messaging.MessageConsumer;
 import com.helltractor.exchange.messaging.MessageProducer;
@@ -17,36 +7,44 @@ import com.helltractor.exchange.messaging.MessageTypes;
 import com.helltractor.exchange.messaging.Messaging;
 import com.helltractor.exchange.messaging.MessagingFactory;
 import com.helltractor.exchange.support.LoggerSupport;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.listener.CommonErrorHandler;
+import org.springframework.kafka.listener.MessageListenerContainer;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Sequence service.
  */
 @Component
 public class SequenceService extends LoggerSupport implements CommonErrorHandler {
-
+    
     private static final String GROUP_ID = "SequenceGroup";
-
+    
     @Autowired
     private SequenceHandler sequenceHandler;
-
+    
     @Autowired
     private MessagingFactory messagingFactory;
-
+    
     @Autowired
     private MessageTypes messageTypes;
-
+    
     private MessageProducer<AbstractEvent> messageProducer;
-
+    
     private AtomicLong sequence;
-
+    
     private Thread jobThread;
-
+    
     private boolean crash = false;
     private boolean running;
-
+    
     @PostConstruct
     public void init() {
         this.jobThread = new Thread(() -> {
@@ -75,7 +73,7 @@ public class SequenceService extends LoggerSupport implements CommonErrorHandler
         });
         this.jobThread.start();
     }
-
+    
     @PreDestroy
     public void shutdown() {
         logger.info("shutdown sequence service...");
@@ -90,21 +88,21 @@ public class SequenceService extends LoggerSupport implements CommonErrorHandler
             jobThread = null;
         }
     }
-
+    
     /**
      * Message consumer error handler.
      */
     @Override
     public void handleBatch(Exception thrownException, ConsumerRecords<?, ?> data, Consumer<?, ?> consumer,
-            MessageListenerContainer container, Runnable invokeListener) {
+                            MessageListenerContainer container, Runnable invokeListener) {
         logger.error("batch error", thrownException);
         panic();
     }
-
+    
     private void sendMessages(List<AbstractEvent> messages) {
         this.messageProducer.sendMessages(messages);
     }
-
+    
     private synchronized void processMessage(List<AbstractEvent> messages) {
         if (!running || crash) {
             panic();
@@ -123,7 +121,7 @@ public class SequenceService extends LoggerSupport implements CommonErrorHandler
             panic();
             throw new Error(e);
         }
-
+        
         if (logger.isInfoEnabled()) {
             long end = System.currentTimeMillis();
             logger.info("sequenced {} messages in {} ms. current sequence id: {}", messages.size(), (end - start),
@@ -131,7 +129,7 @@ public class SequenceService extends LoggerSupport implements CommonErrorHandler
         }
         sendMessages(sequenced);
     }
-
+    
     private void panic() {
         this.crash = true;
         this.running = false;

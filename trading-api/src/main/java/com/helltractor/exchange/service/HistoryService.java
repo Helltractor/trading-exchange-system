@@ -1,21 +1,20 @@
 package com.helltractor.exchange.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
 import com.helltractor.exchange.bean.SimpleMatchDetailRecord;
 import com.helltractor.exchange.model.trade.MatchDetailEntity;
 import com.helltractor.exchange.model.trade.OrderEntity;
 import com.helltractor.exchange.support.AbstractDbService;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Find history details service.
  */
 @Component
 public class HistoryService extends AbstractDbService {
-
+    
     /**
      * Get history orders by userId.
      */
@@ -27,7 +26,7 @@ public class HistoryService extends AbstractDbService {
                 .limit(maxResults)
                 .list();
     }
-
+    
     /**
      * Get history order by userId and orderId.
      */
@@ -38,7 +37,7 @@ public class HistoryService extends AbstractDbService {
         }
         return entity;
     }
-
+    
     /**
      * Get history match details by orderId.
      */
@@ -49,7 +48,7 @@ public class HistoryService extends AbstractDbService {
                 .orderBy("id")
                 .list();
         return details.stream().map(e
-                -> new SimpleMatchDetailRecord(e.price, e.quantity, e.type))
+                        -> new SimpleMatchDetailRecord(e.price, e.quantity, e.type))
                 .collect(Collectors.toList());
     }
 }

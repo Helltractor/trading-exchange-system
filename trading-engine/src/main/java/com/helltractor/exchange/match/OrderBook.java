@@ -4,12 +4,17 @@ import com.helltractor.exchange.bean.OrderBookItemBean;
 import com.helltractor.exchange.enums.Direction;
 import com.helltractor.exchange.model.trade.OrderEntity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class OrderBook {
-
+    
     /**
-     * sell order sorting price low to high, same price sequenceId low to high
+     * sell order sorting price low to high, same price sequenceId low to high.
      */
     private static final Comparator<OrderKey> SORT_SELL = new Comparator<>() {
         @Override
@@ -19,7 +24,7 @@ public class OrderBook {
         }
     };
     /**
-     * buy order sorting price high to low, same price sequenceId low to high
+     * buy order sorting price high to low, same price sequenceId low to high.
      */
     private static final Comparator<OrderKey> SORT_BUY = new Comparator<>() {
         @Override
@@ -28,41 +33,41 @@ public class OrderBook {
             return cmp == 0 ? Long.compare(o1.sequenceId(), o2.sequenceId()) : cmp;
         }
     };
-
+    
     public final Direction direction;
-
+    
     public final TreeMap<OrderKey, OrderEntity> book;
-
+    
     public OrderBook(Direction direction) {
         this.direction = direction;
         this.book = new TreeMap<>(direction == Direction.BUY ? SORT_BUY : SORT_SELL);
     }
-
+    
     public OrderBook(Direction direction, TreeMap<OrderKey, OrderEntity> book) {
         this.direction = direction;
         this.book = book;
     }
-
+    
     public OrderEntity getFirst() {
         return this.book.isEmpty() ? null : this.book.firstEntry().getValue();
     }
-
+    
     public boolean remove(OrderEntity order) {
         return this.book.remove(new OrderKey(order.sequenceId, order.price)) != null;
     }
-
+    
     public boolean add(OrderEntity order) {
         return this.book.put(new OrderKey(order.sequenceId, order.price), order) == null;
     }
-
+    
     public boolean exist(OrderEntity order) {
         return this.book.containsKey(new OrderKey(order.sequenceId, order.price));
     }
-
+    
     public int size() {
         return this.book.size();
     }
-
+    
     public List<OrderBookItemBean> getOrderBook(int maxDepth) {
         List<OrderBookItemBean> items = new ArrayList<>();
         OrderBookItemBean preItem = null;
@@ -85,7 +90,7 @@ public class OrderBook {
         }
         return items;
     }
-
+    
     @Override
     public String toString() {
         if (this.book.isEmpty()) {

@@ -1,11 +1,8 @@
 package com.helltractor.exchange.messaging;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.helltractor.exchange.message.AbstractMessage;
+import com.helltractor.exchange.util.JsonUtil;
+import jakarta.annotation.PostConstruct;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,22 +13,26 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.stereotype.Component;
 
-import com.helltractor.exchange.message.AbstractMessage;
-import com.helltractor.exchange.util.JsonUtil;
-
-import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Holds message types.
  */
 @Component
 public class MessageTypes {
-
-    static final char SEP = '#';
+    
+    private static final char SEP = '#';
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    
     private final String messagePackage = AbstractMessage.class.getPackageName();
+    
     private final Map<String, Class<? extends AbstractMessage>> messageTypes = new HashMap<>();
-
+    
     @SuppressWarnings("unchecked")
     @PostConstruct
     public void init() {
@@ -63,13 +64,13 @@ public class MessageTypes {
             }
         }
     }
-
+    
     public String serialize(AbstractMessage message) {
         String type = message.getClass().getName();
         String json = JsonUtil.writeJson(message);
         return type + SEP + json;
     }
-
+    
     public List<AbstractMessage> deserialize(List<String> dataList) {
         List<AbstractMessage> list = new ArrayList<>(dataList.size());
         for (String data : dataList) {
@@ -77,7 +78,7 @@ public class MessageTypes {
         }
         return list;
     }
-
+    
     public List<AbstractMessage> deserializeConsumerRecords(List<ConsumerRecord<String, String>> dataList) {
         List<AbstractMessage> list = new ArrayList<>(dataList.size());
         for (ConsumerRecord<String, String> data : dataList) {
@@ -85,7 +86,7 @@ public class MessageTypes {
         }
         return list;
     }
-
+    
     public AbstractMessage deserialize(String data) {
         int pos = data.indexOf(SEP);
         if (pos == -1) {
